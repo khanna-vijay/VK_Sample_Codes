@@ -1,35 +1,75 @@
-
-
-
-
-
-##### to Get context details from S3 Put.
+To Read adn Delete/ Copy Object from S3 to other Bucket
 
 from __future__ import print_function
 
 import json
+import time
 import urllib
 import boto3
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+print('Loading function * * * * VK')
+
+
+
 
 s3 = boto3.client('s3')
+
+
 def lambda_handler(event, context):
     #print("Received event: " + json.dumps(event, indent=2))
-    print('* * * Printing Context ')
-    print("* Log Stream Name ",context.log_stream_name)
-    print("* Log Group Name ",context.log_group_name)
-    print("Time Remaining in ms",context.get_remaining_time_in_millis())
-    print(".")
+
+    #logger.info('got event{}'.format(event))
+    #logger.error('something went wrong')
+
+
+    #print('* * * Printing Context ')
+    #print("* Log Stream Name ",context.log_stream_name)
+    #print("* Log Group Name ",context.log_group_name)
+    #print("Time Remaining in ms",context.get_remaining_time_in_millis())
+    #print(".")
+    ## to Delete the Object Uploaded to the S3 Bucket
     
-    #print('* * * * Full_Dump Received the Create event{}'.format(event))
-    # Get the object from the event and show its content type
     bucket = event['Records'][0]['s3']['bucket']['name']
-    key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key'].encode('utf8'))
- 
+    source_bucket = event['Records'][0]['s3']['bucket']['name']
+    key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key'])
+    ## Assume the Lambda Code name is same as S3 Target Bucket.. else modify accordingly
+    #target_bucket = context.function_name
+    target_bucket = "integrated-services-code-repo"
+    copy_source = {'Bucket':source_bucket,'Key':key}
+    
+# print ('### Bucket : ',bucket)
+# print ('%%%% Key : ',key)
     try:
-        response = s3.get_object(Bucket=bucket, Key=key)
-        print("CONTENT TYPE: " + response['ContentType'])
-        return response['ContentType']
+        print("Using waiter to wait for object to persist thru S3")
+        waiter = s3.get_waiter('object_exists')
+        waiter.wait(Bucket=bucket, Key=key)
+        response = s3.head_object(Bucket=bucket, Key=key)
+        print("CONTENT TYPE: "+ response['ContentType'])
+        print('ETag'+ response['ETag'])
+        print('Content Length',response['ContentLength'])
+        print ('### Deleting Object : ',bucket," - ",key)
+       # s3.delete_object(Bucket=bucket,Key=key)
+        # Will copy the file from source to target       s3.copy_object(Bucket=target_bucket,Key=key,CopySource=copy_source)
+        s3.copy_object(Bucket=target_bucket,Key=key,CopySource=copy_source)
+
     except Exception as e:
         print(e)
-        print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
+        print('! ! ! ! Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
         raise e
+    
+    #### to Show the Details of Event.. Basics.. 
+    #print('* * * * Full_Dump Received the Create event{}'.format(event))
+    # Get the object from the event and show its content type
+    #bucket = event['Records'][0]['s3']['bucket']['name']
+    #key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key'].encode('utf8'))
+ 
+    #    try:
+    #        response = s3.get_object(Bucket=bucket, Key=key)
+    #        print("CONTENT TYPE: " + response['ContentType'])
+    #        return response['ContentType']
+    #    except Exception as e:
+    #        print(e)
+    #        print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
+    #        raise e
