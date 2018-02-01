@@ -1,6 +1,54 @@
 Lambda Code in Python to Return Success Response
 Ensure to Create the Function in Default VPC.. no custom VPC
 
+#########CFN
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "Vijay Khanna: CFN to Lambda Variable Exchange 2 Way",
+	"Parameters": {
+		"CloudToolsBucket": {
+			"Description": "Name of S3 bucket containing Reference File. Have a Folder\\Key as vk\\Config.txt with the commands/parameters n the bucket",
+			"Type": "String",
+			"Default": "integrated-services-orchestration"
+		},
+
+		"OperatorName": {
+			"Description": "Person Executing this CFN",
+			"Type": "String",
+			"Default": "Vijay"
+		},
+		"LambdaRoleArn": {
+			"Description": "Lambda to be Called by this CFN",
+			"Type": "String",
+			"Default": "arn:aws:lambda:ap-south-1:940679525002:function:vk-cfn-to-lambda-receive-send-function-2Way"
+		}
+	},
+	"Resources": {
+				
+		"SendToLambda": {
+      "Type": "Custom::SendLambdaDump",
+      "Properties": {
+        "ServiceToken":  "arn:aws:lambda:ap-south-1:940679525002:function:vk-cfn-to-lambda-receive-send-function-2Way",
+        "Region": { "Ref": "AWS::Region" },
+        "OperatorNameIs": { "Ref": "OperatorName" },
+        "CloudToolsBucketIs": {"Ref":  "CloudToolsBucket" }
+      }
+    }
+		
+	},
+
+	 "Outputs": {
+    "LambdaResponse": {
+      "Description": "Lambda Response",
+      "Value": { "Fn::GetAtt": [ "SendToLambda", "HowLife" ] }
+    }
+  }
+}
+
+
+
+#########Lambda
+
 from __future__ import print_function
 SUCCESS = "SUCCESS"
 FAILED = "FAILED"
@@ -41,7 +89,8 @@ def send(event, context, responseStatus, responseData, physicalResourceId):
     responseBody['StackId'] = event['StackId']
     responseBody['RequestId'] = event['RequestId']
     responseBody['LogicalResourceId'] = event['LogicalResourceId']
-    responseBody['Data'] = responseData
+    responseBody['Data'] = {"HowLife" : "Too Good"}
+    #responseBody['Data'] = responseData
 
     json_responseBody = json.dumps(responseBody)
 
