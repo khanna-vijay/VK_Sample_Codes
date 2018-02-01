@@ -67,6 +67,8 @@ print('Loading function * * * * VK')
 def lambda_handler(event, context):
     log.info ("Received event: " + json.dumps(event, indent=2))
     #print event['Records'][0]['s3']['bucket']['name']
+    print ("Operator as received from CF Parameters : ", event['ResourceProperties']['OperatorNameIs'])
+    print ("LogicalResourceId  ", event['LogicalResourceId'])
     
     try:
         response = send(event, context, SUCCESS, {}, None)
