@@ -1,0 +1,63 @@
+Lambda Code in Python to Return Success Response
+Ensure to Create the Function in Default VPC.. no custom VPC
+
+from __future__ import print_function
+SUCCESS = "SUCCESS"
+FAILED = "FAILED"
+import json
+import time
+import urllib
+import boto3
+import logging
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+
+from botocore.vendored import requests
+
+print('Loading function * * * * VK')
+
+def lambda_handler(event, context):
+    log.info ("Received event: " + json.dumps(event, indent=2))
+    #print event['Records'][0]['s3']['bucket']['name']
+    
+    try:
+        response = send(event, context, SUCCESS, {}, None)
+        return {"Response" : response }
+
+    except Exception as e:
+        print(e)
+        raise e
+        
+def send(event, context, responseStatus, responseData, physicalResourceId):
+    responseUrl = event['ResponseURL']
+
+    log.info("Event: " + str(event))
+    log.info("ResponseURL: " + responseUrl)
+
+    responseBody = {}
+    responseBody['Status'] = responseStatus
+    responseBody['Reason'] = 'See the details in CloudWatch Log Stream: ' + context.log_stream_name
+    responseBody['PhysicalResourceId'] = physicalResourceId or context.log_stream_name
+    responseBody['StackId'] = event['StackId']
+    responseBody['RequestId'] = event['RequestId']
+    responseBody['LogicalResourceId'] = event['LogicalResourceId']
+    responseBody['Data'] = responseData
+
+    json_responseBody = json.dumps(responseBody)
+
+    log.info("Response body: " + str(json_responseBody))
+
+    headers = {
+        'content-type' : '',
+        'content-length' : str(len(json_responseBody))
+    }
+
+    try:
+        log.info ('Now Responding in Try')
+        response = requests.put(responseUrl,data=json_responseBody,headers=headers)
+        log.info ('Last But one Line')
+        log.info("Status code: " + str(response.reason))
+        return SUCCESS
+    except Exception as e:
+        log.error("send(..) failed executing requests.put(..): " + str(e))
+        return FAILED
