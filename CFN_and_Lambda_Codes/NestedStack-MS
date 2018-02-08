@@ -1,0 +1,1278 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Nested STACK QS(0030) - Enterprise Accelerator for Microsoft Servers (EAMS) is a QuickStart that provides an integrated deployment of Active Directory, Exchange, SharePoint, Lync, and SQL Server in the same VPC through a CFN template that calls the individual Microsoft server QuickStarts. **WARNING** This template creates Amazon EC2 Windows instance and related resources. You will be billed for the AWS resources used if you create a stack from this template.",
+    "Metadata": {
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": {
+                        "default": "Network Configuration"
+                    },
+                    "Parameters": [
+                        "VPCCIDR",
+                        "PrivateSubnet1CIDR",
+                        "PrivateSubnet2CIDR",
+                        "PublicSubnet1CIDR",
+                        "PublicSubnet2CIDR"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Amazon EC2 Configuration"
+                    },
+                    "Parameters": [
+                        "KeyPairName",
+                        "RDGWInstanceType",
+                        "ADServer1InstanceType",
+                        "ADServer1NetBIOSName",
+                        "ADServer1PrivateIP",
+                        "ADServer2InstanceType",
+                        "ADServer2NetBIOSName",
+                        "ADServer2PrivateIP",
+                        "EdgeInstanceType",
+                        "EXCHInstanceType",
+                        "EXCH1PrivateIp",
+                        "EXCH1PrivateIp2",
+                        "EXCH2PrivateIp",
+                        "EXCH2PrivateIp2",
+                        "LyncFEInstanceType",
+                        "FE1PrivateIp",
+                        "FE2PrivateIp",
+                        "LyncEdgeInstanceType",
+                        "LE1PrivateIp",
+                        "LE1PublicIp",
+                        "LE2PrivateIp",
+                        "LE2PublicIp",
+                        "WSFCNode1InstanceType",
+                        "WSFCNode1NetBIOSName",
+                        "WSFCNode1PrivateIP1",
+                        "WSFCNode1PrivateIP2",
+                        "WSFCNode1PrivateIP3",
+                        "WSFCNode2InstanceType",
+                        "WSFCNode2NetBIOSName",
+                        "WSFCNode2PrivateIP1",
+                        "WSFCNode2PrivateIP2",
+                        "WSFCNode2PrivateIP3",
+                        "SPInstanceType",
+                        "OOSInstanceType",
+                        "ELBConfiguration",
+                        "WAPADFSInstanceType"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Microsoft Active Directory Configuration"
+                    },
+                    "Parameters": [
+                        "DomainDNSName",
+                        "DomainNetBIOSName",
+                        "RestoreModePassword",
+                        "DomainAdminUser",
+                        "DomainAdminPassword"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Microsoft SQL Server Configuration"
+                    },
+                    "Parameters": [
+                        "SQLServerVersion",
+                        "SQLServiceAccount",
+                        "SQLServiceAccountPassword"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Microsoft SharePoint Configuration"
+                    },
+                    "Parameters": [
+                        "SPISOImageURI",
+                        "SPKey",
+                        "SPTopology",
+                        "SPFarmAccount",
+                        "SPFarmAccountPassword",
+                        "IncludeOfficeOnlineServer"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Microsoft Lync Configuration"
+                    },
+                    "Parameters": [
+                        "LyncISOImageURI",
+                        "IncludeLyncEdge"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Microsoft Exchange Configuration"
+                    },
+                    "Parameters": [
+                        "IncludeEdge"
+                    ]
+                }
+            ],
+            "ParameterLabels": {
+                "ADServer1InstanceType": {
+                    "default": "Domain Controller 1 Instance Type"
+                },
+                "ADServer1NetBIOSName": {
+                    "default": "Domain Controller 1 NetBIOS Name"
+                },
+                "ADServer1PrivateIP": {
+                    "default": "Domain Controller 1 Private IP Address"
+                },
+                "ADServer2InstanceType": {
+                    "default": "Domain Controller 2 Instance Type"
+                },
+                "ADServer2NetBIOSName": {
+                    "default": "Domain Controller 2 NetBIOS Name"
+                },
+                "ADServer2PrivateIP": {
+                    "default": "Domain Controller 2 Private IP Address"
+                },
+                "DomainAdminPassword": {
+                    "default": "Domain Admin Password"
+                },
+                "DomainAdminUser": {
+                    "default": "Domain Admin User Name"
+                },
+                "DomainDNSName": {
+                    "default": "Domain DNS Name"
+                },
+                "DomainNetBIOSName": {
+                    "default": "Domain NetBIOS Name"
+                },
+                "ELBConfiguration": {
+                    "default": "ELB Configuration"
+                },
+                "IncludeEdge": {
+                    "default": "Include Exchange Edge Transport Servers"
+                },
+                "IncludeLyncEdge": {
+                    "default": "Include Lync Edge Servers"
+                },
+                "IncludeOfficeOnlineServer": {
+                    "default": "Include Office Online Servers"
+                },
+                "KeyPairName": {
+                    "default": "Key Pair Name"
+                },
+                "EdgeInstanceType": {
+                    "default": "Exchange Edge Transport Server Instance Type"
+                },
+                "EXCHInstanceType": {
+                    "default": "Exchange Multi Role Server Instance Type"
+                },
+                "EXCH1PrivateIp": {
+                    "default": "Exchange Server 1 Private IP Address 1"
+                },
+                "EXCH1PrivateIp2": {
+                    "default": "Exchange Server 1 Private IP Address 2"
+                },
+                "EXCH2PrivateIp": {
+                    "default": "Exchange Server 2 Private IP Address 1"
+                },
+                "EXCH2PrivateIp2": {
+                    "default": "Exchange Server 2 Private IP Address 2"
+                },
+                "FE1PrivateIp": {
+                    "default": "Lync Front End Server 1 Private IP Address"
+                },
+                "FE2PrivateIp": {
+                    "default": "Lync Front End Server 2 Private IP Address"
+                },
+                "LE1PrivateIp": {
+                    "default": "Lync Edge Server 1 Private IP Address"
+                },
+                "LE1PublicIp": {
+                    "default": "Lync Edge Server 1 Public IP Address"
+                },
+                "LE2PrivateIp": {
+                    "default": "Lync Edge Server 2 Private IP Address"
+                },
+                "LE2PublicIp": {
+                    "default": "Lync Edge Server 1 Public IP Address"
+                },
+                "LyncEdgeInstanceType": {
+                    "default": "Lync Edge Server Instance Type"
+                },
+                "LyncFEInstanceType": {
+                    "default": "Lync Front End Server Instance Type"
+                },
+                "OOSInstanceType": {
+                    "default": "Office Online Server Instance Type"
+                },
+                "LyncISOImageURI": {
+                    "default": "Installation Media ISO Image File URI"
+                },
+                "PrivateSubnet1CIDR": {
+                    "default": "Private Subnet 1 CIDR"
+                },
+                "PrivateSubnet2CIDR": {
+                    "default": "Private Subnet 2 CIDR"
+                },
+                "PublicSubnet1CIDR": {
+                    "default": "Public Subnet 1 CIDR"
+                },
+                "PublicSubnet2CIDR": {
+                    "default": "Public Subnet 2 CIDR"
+                },
+                "RDGWInstanceType": {
+                    "default": "Remote Desktop Gateway Server Instance Type"
+                },
+                "RestoreModePassword": {
+                    "default": "Restore Mode Password"
+                },
+                "SPFarmAccount": {
+                    "default": "Farm Account Name"
+                },
+                "SPFarmAccountPassword": {
+                    "default": "Farm Account Password"
+                },
+                "SPInstanceType": {
+                    "default": "SharePoint Server Instance Type"
+                },
+                "SPISOImageURI": {
+                    "default": "Installation Media ISO Image File URI"
+                },
+                "SPKey": {
+                    "default": "Product Key"
+                },
+                "SPTopology": {
+                    "default": "Farm Topology"
+                },
+                "SQLServerVersion": {
+                    "default": "Version"
+                },
+                "SQLServiceAccount": {
+                    "default": "Service Account Name"
+                },
+                "SQLServiceAccountPassword": {
+                    "default": "Service Account Password"
+                },
+                "VPCCIDR": {
+                    "default": "VPC CIDR"
+                },
+                "WAPADFSInstanceType": {
+                    "default": "WAP and ADFS Server Instance Type"
+                },
+                "WSFCNode1InstanceType": {
+                    "default": "WSFC Node 1 Instance Type"
+                },
+                "WSFCNode1NetBIOSName": {
+                    "default": "WSFC Node 1 NetBIOS Name"
+                },
+                "WSFCNode1PrivateIP1": {
+                    "default": "WSFC Node 1 Private IP Address 1"
+                },
+                "WSFCNode1PrivateIP2": {
+                    "default": "WSFC Node 1 Private IP Address 2"
+                },
+                "WSFCNode1PrivateIP3": {
+                    "default": "WSFC Node 1 Private IP Address 3"
+                },
+                "WSFCNode2InstanceType": {
+                    "default": "WSFC Node 2 Instance Type"
+                },
+                "WSFCNode2NetBIOSName": {
+                    "default": "WSFC Node 2 NetBIOS Name"
+                },
+                "WSFCNode2PrivateIP1": {
+                    "default": "WSFC Node 2 Private IP Address 1"
+                },
+                "WSFCNode2PrivateIP2": {
+                    "default": "WSFC Node 2 Private IP Address 2"
+                },
+                "WSFCNode2PrivateIP3": {
+                    "default": "WSFC Node 2 Private IP Address 3"
+                }
+            }
+        }
+    },
+    "Parameters": {
+        "ADServer1InstanceType": {
+            "AllowedValues": [
+                "m4.large",
+                "m4.xlarge",
+                "m4.2xlarge",
+                "m4.4xlarge"
+            ],
+            "Default": "m4.xlarge",
+            "Description": "Amazon EC2 instance type for the first Active Directory Instance",
+            "Type": "String"
+        },
+        "ADServer1NetBIOSName": {
+            "AllowedPattern": "[a-zA-Z0-9]+",
+            "Default": "DC1",
+            "Description": "NetBIOS name of the 1st AD Server (upto 15 characters)",
+            "MaxLength": "15",
+            "MinLength": "1",
+            "Type": "String"
+        },
+        "ADServer1PrivateIP": {
+            "Default": "10.0.0.10",
+            "Description": "Fixed private IP for the first Active Directory server located in AZ1",
+            "Type": "String"
+        },
+        "ADServer2InstanceType": {
+            "AllowedValues": [
+                "m4.large",
+                "m4.xlarge",
+                "m4.2xlarge",
+                "m4.4xlarge"
+            ],
+            "Default": "m4.xlarge",
+            "Description": "Amazon EC2 instance type for the second Active Directory Instance",
+            "Type": "String"
+        },
+        "ADServer2NetBIOSName": {
+            "AllowedPattern": "[a-zA-Z0-9]+",
+            "Default": "DC2",
+            "Description": "NetBIOS name of the 2nd AD Server (upto 15 characters)",
+            "MaxLength": "15",
+            "MinLength": "1",
+            "Type": "String"
+        },
+        "ADServer2PrivateIP": {
+            "Default": "10.0.64.10",
+            "Description": "Fixed private IP for the second Active Directory server located in AZ2",
+            "Type": "String"
+        },
+        "DomainAdminPassword": {
+            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "Description": "Password for the domain admin user. Must be at least 8 characters containing letters, numbers and symbols",
+            "MaxLength": "32",
+            "MinLength": "8",
+            "NoEcho": "true",
+            "Type": "String"
+        },
+        "DomainAdminUser": {
+            "AllowedPattern": "[a-zA-Z0-9]*",
+            "Default": "StackAdmin",
+            "Description": "User name for the account that will be added as Domain Administrator. This is separate from the default \"Administrator\" account",
+            "MaxLength": "25",
+            "MinLength": "5",
+            "Type": "String"
+        },
+        "DomainDNSName": {
+            "AllowedPattern": "[a-zA-Z0-9]+\\..+",
+            "Default": "example.com",
+            "Description": "Fully qualified domain name (FQDN) of the forest root domain e.g. example.com",
+            "MaxLength": "25",
+            "MinLength": "3",
+            "Type": "String"
+        },
+        "DomainNetBIOSName": {
+            "AllowedPattern": "[a-zA-Z0-9]+",
+            "Default": "example",
+            "Description": "NetBIOS name of the domain (upto 15 characters) for users of earlier versions of Windows e.g. EXAMPLE",
+            "MaxLength": "15",
+            "MinLength": "1",
+            "Type": "String"
+        },
+        "ELBConfiguration": {
+            "AllowedValues": [
+                "internal",
+                "external"
+            ],
+            "Default": "external",
+            "Description": "Specify how to configure the Elastic Load Balancer. Allowed values are internal or external",
+            "Type": "String"
+        },
+        "EXCH1PrivateIp": {
+            "Default": "10.0.0.150",
+            "Description": "Primary private IP for the first Exchange Server",
+            "Type": "String"
+        },
+        "EXCH1PrivateIp2": {
+            "Default": "10.0.0.151",
+            "Description": "Secondary private IP for the first Exchange Server",
+            "Type": "String"
+        },
+        "EXCH2PrivateIp": {
+            "Default": "10.0.64.150",
+            "Description": "Primary private IP for the second Exchange Server",
+            "Type": "String"
+        },
+        "EXCH2PrivateIp2": {
+            "Default": "10.0.64.151",
+            "Description": "Secondary private IP for the second Exchange Server",
+            "Type": "String"
+        },
+        "EXCHInstanceType": {
+            "AllowedValues": [
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge"
+            ],
+            "ConstraintDescription": "Only EBS Optimized instance types r3.xlarge, r3.2xlarge, r3.4xlarge allowed",
+            "Default": "r3.xlarge",
+            "Description": "Amazon EC2 instance type for the Exchange Servers",
+            "Type": "String"
+        },
+        "EdgeInstanceType": {
+            "AllowedValues": [
+                "m3.medium",
+                "m3.large",
+                "m3.xlarge",
+                "m3.2xlarge"
+            ],
+            "ConstraintDescription": "Select a general purpose instance type",
+            "Default": "m3.large",
+            "Description": "Amazon EC2 instance type for the Exchange Edge Transport Servers",
+            "Type": "String"
+        },
+        "FE1PrivateIp": {
+            "Default": "10.0.0.160",
+            "Description": "Primary private IP for the first Lync Front-End Server",
+            "Type": "String"
+        },
+        "FE2PrivateIp": {
+            "Default": "10.0.64.160",
+            "Description": "Primary private IP for the second Lync Front-End Server",
+            "Type": "String"
+        },
+        "IncludeEdge": {
+            "AllowedValues": [
+                "true",
+                "false"
+            ],
+            "Default": "false",
+            "Description": "Set this parameter to true to include Exchange Edge Transport servers in the public subnets",
+            "Type": "String"
+        },
+        "IncludeLyncEdge": {
+            "AllowedValues": [
+                "true",
+                "false"
+            ],
+            "Default": "false",
+            "Description": "Set this parameter to true to include Lync Edge servers in the public subnets",
+            "Type": "String"
+        },
+        "IncludeOfficeOnlineServer": {
+            "AllowedValues": [
+                "true",
+                "false"
+            ],
+            "Default": "false",
+            "Description": "To include an Office Online Server in each AZ, set this parameter to true.",
+            "Type": "String"
+        },
+        "KeyPairName": {
+            "Description": "Public/private key pairs allow you to securely connect to your instance after it launches",
+            "Type": "AWS::EC2::KeyPair::KeyName"
+        },
+        "LE1PrivateIp": {
+            "Default": "10.0.0.161",
+            "Description": "Primary private IP for the first Lync Edge Server",
+            "Type": "String"
+        },
+        "LE1PublicIp": {
+            "Default": "10.0.32.161",
+            "Description": "Primary public subnet IP for the first Lync Edge Server",
+            "Type": "String"
+        },
+        "LE2PrivateIp": {
+            "Default": "10.0.64.161",
+            "Description": "Primary private IP for the second Edge Server",
+            "Type": "String"
+        },
+        "LE2PublicIp": {
+            "Default": "10.0.96.161",
+            "Description": "Primary public subnet IP for the second Edge Server",
+            "Type": "String"
+        },
+        "LyncEdgeInstanceType": {
+            "AllowedValues": [
+                "m4.xlarge"
+            ],
+            "Default": "m4.xlarge",
+            "Description": "Amazon EC2 instance type for the Lync Edge Servers",
+            "Type": "String"
+        },
+        "LyncFEInstanceType": {
+            "AllowedValues": [
+                "m4.2xlarge"
+            ],
+            "Default": "m4.2xlarge",
+            "Description": "Amazon EC2 instance type for the Lync Standard Edition Front End Servers",
+            "Type": "String"
+        },
+        "LyncISOImageURI": {
+            "AllowedPattern": "^(?i)(s3|http|https):\\/\\/.+",
+            "Description": "S3 URI to an S3 bucket containing the Lync Server 2013 Standard Edition installation media ISO image file (e.g., s3://sample-bucket/microsoft/lync/installation-media.iso). An HTTP/HTTPS URI can also be used (e.g., https://example.com/microsoft/lync/installation-media.iso)",
+            "Type": "String"
+        },
+        "OOSInstanceType": {
+            "AllowedValues": [
+                "m4.large",
+                "m4.xlarge"
+            ],
+            "Default": "m4.xlarge",
+            "Description": "Amazon EC2 instance type for the Office Online Servers",
+            "Type": "String"
+        },
+        "PrivateSubnet1CIDR": {
+            "AllowedPattern": "[a-zA-Z0-9]+\\..+",
+            "Default": "10.0.0.0/19",
+            "Description": "CIDR block for the AD Server tier located in AZ1.",
+            "Type": "String"
+        },
+        "PrivateSubnet2CIDR": {
+            "AllowedPattern": "[a-zA-Z0-9]+\\..+",
+            "Default": "10.0.64.0/19",
+            "Description": "CIDR block for the AD Server tier located in AZ2.",
+            "Type": "String"
+        },
+        "PublicSubnet1CIDR": {
+            "AllowedPattern": "[a-zA-Z0-9]+\\..+",
+            "Default": "10.0.32.0/20",
+            "Description": "CIDR Block for the Public DMZ Subnet located in AZ1",
+            "Type": "String"
+        },
+        "PublicSubnet2CIDR": {
+            "AllowedPattern": "[a-zA-Z0-9]+\\..+",
+            "Default": "10.0.96.0/20",
+            "Description": "CIDR Block for the Public DMZ Subnet located in AZ2",
+            "Type": "String"
+        },
+        "RDGWInstanceType": {
+            "AllowedValues": [
+                "m4.large",
+                "m4.xlarge",
+                "m4.2xlarge",
+                "m4.4xlarge"
+            ],
+            "Default": "m4.xlarge",
+            "Description": "Amazon EC2 instance type for the Remote Desktop Gatweway Instance",
+            "Type": "String"
+        },
+        "RestoreModePassword": {
+            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "Description": "Password for a separate Administrator account when the domain controller is in Restore Mode. Must be at least 8 characters containing letters, numbers and symbols",
+            "MaxLength": "32",
+            "MinLength": "8",
+            "NoEcho": "True",
+            "Type": "String"
+        },
+        "SPFarmAccount": {
+            "AllowedPattern": "[a-zA-Z0-9]*",
+            "Default": "spfarm",
+            "Description": "User name for the SP Farm account.",
+            "MaxLength": "25",
+            "MinLength": "5",
+            "Type": "String"
+        },
+        "SPFarmAccountPassword": {
+            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "Description": "Password for the SP Farm account. Must be at least 8 characters containing letters, numbers and symbols",
+            "MaxLength": "32",
+            "MinLength": "8",
+            "NoEcho": "true",
+            "Type": "String"
+        },
+        "SPISOImageURI": {
+            "AllowedPattern": "^(?i)(s3|http|https):\\/\\/.+",
+            "Description": "S3 URI to an S3 bucket containing the SharePoint Server 2016 installation media ISO image file (e.g., s3://sample-bucket/microsoft/sharepoint/installation-media.iso). An HTTP/HTTPS URI can also be used (e.g., https://example.com/microsoft/sharepoint/installation-media.iso)",
+            "Type": "String"
+        },
+        "SPInstanceType": {
+            "AllowedValues": [
+                "c4.2xlarge",
+                "c4.4xlarge"
+            ],
+            "ConstraintDescription": "Only Compute Optimized instance types c4.2xlarge, c4.4xlarge allowed",
+            "Default": "c4.4xlarge",
+            "Description": "Amazon EC2 instance type for the SharePoint Web Front-End Servers",
+            "Type": "String"
+        },
+        "SPKey": {
+            "Default": "NQGJR-63HC8-XCRQH-MYVCH-3J3QR",
+            "Description": "The Product Key for SharePoint 2016. The trial key is provided by default. You can replace with your own key",
+            "Type": "String"
+        },
+        "SPTopology": {
+            "AllowedValues": [
+                "traditional",
+                "streamlined"
+            ],
+            "Default": "traditional",
+            "Description": "Specify the topology for the SharePoint farm to be deployed. Allowed values are traditional or streamlined",
+            "Type": "String"
+        },
+        "SQLServerVersion": {
+            "AllowedValues": [
+                "2014",
+                "2012"
+            ],
+            "Default": "2014",
+            "Description": "Version of SQL Server to install on WSFC Nodes. Options include either \"2014\" or \"2012\"",
+            "Type": "String"
+        },
+        "SQLServiceAccount": {
+            "AllowedPattern": "[a-zA-Z0-9]*",
+            "Default": "sqlsa",
+            "Description": "User name for the SQL Server Service Account. This Account is a Domain User.",
+            "MaxLength": "25",
+            "MinLength": "5",
+            "Type": "String"
+        },
+        "SQLServiceAccountPassword": {
+            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "Description": "Password for the SQL Service account. Must be at least 8 characters containing letters, numbers and symbols",
+            "MaxLength": "32",
+            "MinLength": "8",
+            "NoEcho": "true",
+            "Type": "String"
+        },
+        "VPCCIDR": {
+            "AllowedPattern": "[a-zA-Z0-9]+\\..+",
+            "Default": "10.0.0.0/16",
+            "Description": "CIDR Block for the VPC",
+            "Type": "String"
+        },
+        "WAPADFSInstanceType": {
+            "AllowedValues": [
+                "c4.2xlarge"
+            ],
+            "Default": "c4.2xlarge",
+            "Description": "Amazon EC2 instance type for the WAP and ADFS Servers",
+            "Type": "String"
+        },
+        "WSFCNode1InstanceType": {
+            "AllowedValues": [
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge"
+            ],
+            "ConstraintDescription": "Only EBS Optimized instance types r3.xlarge, r3.2xlarge, r3.4xlarge allowed",
+            "Default": "r3.2xlarge",
+            "Description": "Amazon EC2 instance type for the 1st WSFC Node",
+            "Type": "String"
+        },
+        "WSFCNode1NetBIOSName": {
+            "AllowedPattern": "[a-zA-Z0-9]+",
+            "Default": "WSFCNode1",
+            "Description": "NetBIOS name of the 1st WSFC Node (up to 15 characters)",
+            "MaxLength": "15",
+            "MinLength": "1",
+            "Type": "String"
+        },
+        "WSFCNode1PrivateIP1": {
+            "Default": "10.0.0.100",
+            "Description": "Primary private IP for the 1st WSFC Node located in AZ1",
+            "Type": "String"
+        },
+        "WSFCNode1PrivateIP2": {
+            "Default": "10.0.0.101",
+            "Description": "Secondary private IP for WSFC cluster on 1st WSFC Node",
+            "Type": "String"
+        },
+        "WSFCNode1PrivateIP3": {
+            "Default": "10.0.0.102",
+            "Description": "Third private IP for Availability Group Listener on 1st WSFC Node",
+            "Type": "String"
+        },
+        "WSFCNode2InstanceType": {
+            "AllowedValues": [
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge"
+            ],
+            "ConstraintDescription": "Only EBS Optimized instance types r3.xlarge, r3.2xlarge, r3.4xlarge allowed",
+            "Default": "r3.2xlarge",
+            "Description": "Amazon EC2 instance type for the 1st WSFC Node",
+            "Type": "String"
+        },
+        "WSFCNode2NetBIOSName": {
+            "AllowedPattern": "[a-zA-Z0-9]+",
+            "Default": "WSFCNode2",
+            "Description": "NetBIOS name of the 2nd WSFC Node (up to 15 characters)",
+            "MaxLength": "15",
+            "MinLength": "1",
+            "Type": "String"
+        },
+        "WSFCNode2PrivateIP1": {
+            "Default": "10.0.64.100",
+            "Description": "Primary private IP for the 2nd WSFC Node located in AZ2",
+            "Type": "String"
+        },
+        "WSFCNode2PrivateIP2": {
+            "Default": "10.0.64.101",
+            "Description": "Secondary private IP for WSFC cluster on 2nd WSFC Node",
+            "Type": "String"
+        },
+        "WSFCNode2PrivateIP3": {
+            "Default": "10.0.64.102",
+            "Description": "Third private IP for Availability Group Listener on 2nd WSFC Node",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "ADStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": "https://s3.amazonaws.com/quickstart-reference/microsoft/activedirectory/latest/templates/Template_1_AD_2012R2.template",
+                "Parameters": {
+                    "ADServer1InstanceType": {
+                        "Ref": "ADServer1InstanceType"
+                    },
+                    "ADServer1NetBIOSName": {
+                        "Ref": "ADServer1NetBIOSName"
+                    },
+                    "ADServer1PrivateIP": {
+                        "Ref": "ADServer1PrivateIP"
+                    },
+                    "ADServer2InstanceType": {
+                        "Ref": "ADServer2InstanceType"
+                    },
+                    "ADServer2NetBIOSName": {
+                        "Ref": "ADServer2NetBIOSName"
+                    },
+                    "ADServer2PrivateIP": {
+                        "Ref": "ADServer2PrivateIP"
+                    },
+                    "DomainAdminPassword": {
+                        "Ref": "DomainAdminPassword"
+                    },
+                    "DomainAdminUser": {
+                        "Ref": "DomainAdminUser"
+                    },
+                    "DomainDNSName": {
+                        "Ref": "DomainDNSName"
+                    },
+                    "DomainNetBIOSName": {
+                        "Ref": "DomainNetBIOSName"
+                    },
+                    "KeyPairName": {
+                        "Ref": "KeyPairName"
+                    },
+                    "PrivateSubnet1CIDR": {
+                        "Ref": "PrivateSubnet1CIDR"
+                    },
+                    "PrivateSubnet2CIDR": {
+                        "Ref": "PrivateSubnet2CIDR"
+                    },
+                    "PublicSubnet1CIDR": {
+                        "Ref": "PublicSubnet1CIDR"
+                    },
+                    "PublicSubnet2CIDR": {
+                        "Ref": "PublicSubnet2CIDR"
+                    },
+                    "RDGWInstanceType": {
+                        "Ref": "RDGWInstanceType"
+                    },
+                    "RestoreModePassword": {
+                        "Ref": "RestoreModePassword"
+                    },
+                    "VPCCIDR": {
+                        "Ref": "VPCCIDR"
+                    }
+                }
+            }
+        },
+        "WAPADFSStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "DependsOn": "ADStack",
+            "Properties": {
+                "TemplateURL": "https://s3.amazonaws.com/quickstart-reference/microsoft/wapadfs/latest/templates/Template_1_WAP_ADFS_2012R2.template",
+                "Parameters": {
+                    "ADServer1PrivateIp": {
+                        "Ref": "ADServer1PrivateIP"
+                    },
+                    "ADServer2PrivateIp": {
+                        "Ref": "ADServer2PrivateIP"
+                    },
+                    "ADServerNetBIOSName1": {
+                        "Ref": "ADServer1NetBIOSName"
+                    },
+                    "ADServerNetBIOSName2": {
+                        "Ref": "ADServer2NetBIOSName"
+                    },
+                    "DomainAdminPassword": {
+                        "Ref": "DomainAdminPassword"
+                    },
+                    "DomainAdminUser": {
+                        "Ref": "DomainAdminUser"
+                    },
+                    "DomainDNSName": {
+                        "Ref": "DomainDNSName"
+                    },
+                    "DomainMemberSGID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.DomainMemberSGID"
+                        ]
+                    },
+                    "DomainNetBIOSName": {
+                        "Ref": "DomainNetBIOSName"
+                    },
+                    "InstanceType": {
+                        "Ref": "WAPADFSInstanceType"
+                    },
+                    "KeyPairName": {
+                        "Ref": "KeyPairName"
+                    },
+                    "PrivateSubnet1Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet1ID"
+                        ]
+                    },
+                    "PrivateSubnet2Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet2ID"
+                        ]
+                    },
+                    "PublicSubnet1Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PublicSubnet1ID"
+                        ]
+                    },
+                    "PublicSubnet2Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PublicSubnet2ID"
+                        ]
+                    },
+                    "VPC": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.VPCID"
+                        ]
+                    },
+                    "VPCCIDR": {
+                        "Ref": "VPCCIDR"
+                    }
+                }
+            }
+        },
+        "SQLStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "DependsOn": "ADStack",
+            "Properties": {
+                "TemplateURL": "https://s3.amazonaws.com/quickstart-reference/microsoft/sql/latest/templates/Template_1_SQL_AlwaysOn.template",
+                "Parameters": {
+                    "ADServer1PrivateIp": {
+                        "Ref": "ADServer1PrivateIP"
+                    },
+                    "ADServer2PrivateIp": {
+                        "Ref": "ADServer2PrivateIP"
+                    },
+                    "ADServerNetBIOSName1": {
+                        "Ref": "ADServer1NetBIOSName"
+                    },
+                    "ADServerNetBIOSName2": {
+                        "Ref": "ADServer2NetBIOSName"
+                    },
+                    "SQLServerVersion": {
+                        "Ref": "SQLServerVersion"
+                    },
+                    "DomainAdminPassword": {
+                        "Ref": "DomainAdminPassword"
+                    },
+                    "DomainAdminUser": {
+                        "Ref": "DomainAdminUser"
+                    },
+                    "DomainDNSName": {
+                        "Ref": "DomainDNSName"
+                    },
+                    "DomainMemberSGID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.DomainMemberSGID"
+                        ]
+                    },
+                    "DomainNetBIOSName": {
+                        "Ref": "DomainNetBIOSName"
+                    },
+                    "KeyPairName": {
+                        "Ref": "KeyPairName"
+                    },
+                    "SQLServiceAccount": {
+                        "Ref": "SQLServiceAccount"
+                    },
+                    "SQLServiceAccountPassword": {
+                        "Ref": "SQLServiceAccountPassword"
+                    },
+                    "VPC": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.VPCID"
+                        ]
+                    },
+                    "PrivSub1CIDR": {
+                        "Ref": "PrivateSubnet1CIDR"
+                    },
+                    "WSFCNode1InstanceType": {
+                        "Ref": "WSFCNode1InstanceType"
+                    },
+                    "WSFCNode1NetBIOSName": {
+                        "Ref": "WSFCNode1NetBIOSName"
+                    },
+                    "WSFCNode1PrivateIp": {
+                        "Ref": "WSFCNode1PrivateIP1"
+                    },
+                    "WSFCNode1PrivateIp2": {
+                        "Ref": "WSFCNode1PrivateIP2"
+                    },
+                    "WSFCNode1PrivateIp3": {
+                        "Ref": "WSFCNode1PrivateIP3"
+                    },
+                    "PrivateSubnet1Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet1ID"
+                        ]
+                    },
+                    "PrivSub2CIDR": {
+                        "Ref": "PrivateSubnet2CIDR"
+                    },
+                    "WSFCNode2InstanceType": {
+                        "Ref": "WSFCNode2InstanceType"
+                    },
+                    "WSFCNode2NetBIOSName": {
+                        "Ref": "WSFCNode2NetBIOSName"
+                    },
+                    "WSFCNode2PrivateIp": {
+                        "Ref": "WSFCNode2PrivateIP1"
+                    },
+                    "WSFCNode2PrivateIp2": {
+                        "Ref": "WSFCNode2PrivateIP2"
+                    },
+                    "WSFCNode2PrivateIp3": {
+                        "Ref": "WSFCNode2PrivateIP3"
+                    },
+                    "PrivateSubnet2Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet2ID"
+                        ]
+                    },
+                    "VPCCIDR": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.VPCCIDR"
+                        ]
+                    }
+                }
+            }
+        },
+        "SharePointStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "DependsOn": "SQLStack",
+            "Properties": {
+                "TemplateURL": "https://s3.amazonaws.com/quickstart-reference/microsoft/sharepoint/latest/templates/Template_1_SharePoint_2016.template",
+                "Parameters": {
+                    "ADServer1PrivateIP": {
+                        "Ref": "ADServer1PrivateIP"
+                    },
+                    "ADServer2PrivateIP": {
+                        "Ref": "ADServer2PrivateIP"
+                    },
+                    "ADServer1NetBIOSName": {
+                        "Ref": "ADServer1NetBIOSName"
+                    },
+                    "ADServer2NetBIOSName": {
+                        "Ref": "ADServer2NetBIOSName"
+                    },
+                    "DomainAdminPassword": {
+                        "Ref": "DomainAdminPassword"
+                    },
+                    "DomainAdminUser": {
+                        "Ref": "DomainAdminUser"
+                    },
+                    "DomainDNSName": {
+                        "Ref": "DomainDNSName"
+                    },
+                    "DomainMemberSGID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.DomainMemberSGID"
+                        ]
+                    },
+                    "DomainNetBIOSName": {
+                        "Ref": "DomainNetBIOSName"
+                    },
+                    "ELBConfiguration": {
+                        "Ref": "ELBConfiguration"
+                    },
+                    "IncludeOfficeOnlineServer": {
+                        "Ref": "IncludeOfficeOnlineServer"
+                    },
+                    "KeyPairName": {
+                        "Ref": "KeyPairName"
+                    },
+                    "OOSInstanceType": {
+                        "Ref": "OOSInstanceType"
+                    },
+                    "PrivateSubnet1ID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet1ID"
+                        ]
+                    },
+                    "PrivateSubnet2ID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet2ID"
+                        ]
+                    },
+                    "PublicSubnet1ID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PublicSubnet1ID"
+                        ]
+                    },
+                    "PublicSubnet2ID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PublicSubnet2ID"
+                        ]
+                    },
+                    "SPFarmAccount": {
+                        "Ref": "SPFarmAccount"
+                    },
+                    "SPFarmAccountPassword": {
+                        "Ref": "SPFarmAccountPassword"
+                    },
+                    "SPInstanceType": {
+                        "Ref": "SPInstanceType"
+                    },
+                    "SPISOImageURI": {
+                        "Ref": "SPISOImageURI"
+                    },
+                    "SPKey": {
+                        "Ref": "SPKey"
+                    },
+                    "SPTopology": {
+                        "Ref": "SPTopology"
+                    },
+                    "VPCID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.VPCID"
+                        ]
+                    },
+                    "VPCCIDR": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.VPCCIDR"
+                        ]
+                    }
+                }
+            }
+        },
+        "ExchangeStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "DependsOn": "ADStack",
+            "Properties": {
+                "TemplateURL": "https://s3.amazonaws.com/quickstart-reference/microsoft/exchange/latest/templates/Template_1_EXCH_2013.template",
+                "Parameters": {
+                    "EXCHInstanceType": {
+                        "Ref": "EXCHInstanceType"
+                    },
+                    "EdgeInstanceType": {
+                        "Ref": "EdgeInstanceType"
+                    },
+                    "DomainDNSName": {
+                        "Ref": "DomainDNSName"
+                    },
+                    "DomainNetBIOSName": {
+                        "Ref": "DomainNetBIOSName"
+                    },
+                    "KeyPairName": {
+                        "Ref": "KeyPairName"
+                    },
+                    "ADServerNetBIOSName1": {
+                        "Ref": "ADServer1NetBIOSName"
+                    },
+                    "ADServerNetBIOSName2": {
+                        "Ref": "ADServer2NetBIOSName"
+                    },
+                    "DomainAdminPassword": {
+                        "Ref": "DomainAdminPassword"
+                    },
+                    "DomainAdminUser": {
+                        "Ref": "DomainAdminUser"
+                    },
+                    "ADServer1PrivateIp": {
+                        "Ref": "ADServer1PrivateIP"
+                    },
+                    "ADServer2PrivateIp": {
+                        "Ref": "ADServer2PrivateIP"
+                    },
+                    "EXCH1PrivateIp": {
+                        "Ref": "EXCH1PrivateIp"
+                    },
+                    "EXCH1PrivateIp2": {
+                        "Ref": "EXCH1PrivateIp2"
+                    },
+                    "EXCH2PrivateIp": {
+                        "Ref": "EXCH2PrivateIp"
+                    },
+                    "EXCH2PrivateIp2": {
+                        "Ref": "EXCH2PrivateIp2"
+                    },
+                    "IncludeEdge": {
+                        "Ref": "IncludeEdge"
+                    },
+                    "DomainMemberSGID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.DomainMemberSGID"
+                        ]
+                    },
+                    "VPC": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.VPCID"
+                        ]
+                    },
+                    "PrivateSubnet1Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet1ID"
+                        ]
+                    },
+                    "PrivateSubnet2Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet2ID"
+                        ]
+                    },
+                    "PublicSubnet1Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PublicSubnet1ID"
+                        ]
+                    },
+                    "PublicSubnet2Id": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PublicSubnet2ID"
+                        ]
+                    },
+                    "PrivSub1CIDR": {
+                        "Ref": "PrivateSubnet1CIDR"
+                    },
+                    "PrivSub2CIDR": {
+                        "Ref": "PrivateSubnet2CIDR"
+                    },
+                    "VPCCIDR": {
+                        "Ref": "VPCCIDR"
+                    }
+                }
+            }
+        },
+        "LyncStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "DependsOn": "SQLStack",
+            "Properties": {
+                "TemplateURL": "https://s3.amazonaws.com/quickstart-reference/microsoft/lync/latest/templates/Template_1_Lync_2013.template",
+                "Parameters": {
+                    "KeyPairName": {
+                        "Ref": "KeyPairName"
+                    },
+                    "DomainAdminPassword": {
+                        "Ref": "DomainAdminPassword"
+                    },
+                    "DomainMemberSGID": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.DomainMemberSGID"
+                        ]
+                    },
+                    "VPC": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.VPCID"
+                        ]
+                    },
+                    "PublicSubnet1": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PublicSubnet1ID"
+                        ]
+                    },
+                    "PublicSubnet2": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PublicSubnet2ID"
+                        ]
+                    },
+                    "PrivateSubnet1": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet1ID"
+                        ]
+                    },
+                    "PrivateSubnet2": {
+                        "Fn::GetAtt": [
+                            "ADStack",
+                            "Outputs.PrivateSubnet2ID"
+                        ]
+                    },
+                    "ADServer1PrivateIp": {
+                        "Ref": "ADServer1PrivateIP"
+                    },
+                    "ADServer2PrivateIp": {
+                        "Ref": "ADServer2PrivateIP"
+                    },
+                    "DomainDNSName": {
+                        "Ref": "DomainDNSName"
+                    },
+                    "DomainNetBIOSName": {
+                        "Ref": "DomainNetBIOSName"
+                    },
+                    "DomainAdminUser": {
+                        "Ref": "DomainAdminUser"
+                    },
+                    "ADServerNetBIOSName1": {
+                        "Ref": "ADServer1NetBIOSName"
+                    },
+                    "ADServerNetBIOSName2": {
+                        "Ref": "ADServer2NetBIOSName"
+                    },
+                    "FE1PrivateIp": {
+                        "Ref": "FE1PrivateIp"
+                    },
+                    "FE2PrivateIp": {
+                        "Ref": "FE2PrivateIp"
+                    },
+                    "LE1PrivateIp": {
+                        "Ref": "LE1PrivateIp"
+                    },
+                    "LE2PrivateIp": {
+                        "Ref": "LE2PrivateIp"
+                    },
+                    "LE1PublicIp": {
+                        "Ref": "LE1PublicIp"
+                    },
+                    "LE2PublicIp": {
+                        "Ref": "LE2PublicIp"
+                    },
+                    "LyncFEInstanceType": {
+                        "Ref": "LyncFEInstanceType"
+                    },
+                    "LyncEdgeInstanceType": {
+                        "Ref": "LyncEdgeInstanceType"
+                    },
+                    "IncludeEdge": {
+                        "Ref": "IncludeEdge"
+                    },
+                    "VPCCIDR": {
+                        "Ref": "VPCCIDR"
+                    },
+                    "LyncISOImageURI": {
+                        "Ref": "LyncISOImageURI"
+                    }
+                }
+            }
+        }
+    }
+}
